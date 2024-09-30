@@ -1,8 +1,10 @@
 import 'package:bloc_tutorial/config/route/route_name.dart';
 import 'package:bloc_tutorial/model/movie_list_response.dart';
+import 'package:bloc_tutorial/util/const_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MovieCard extends StatefulWidget {
   const MovieCard({super.key, required this.movie});
@@ -28,6 +30,8 @@ class _MovieCardState extends State<MovieCard> {
               height: MediaQuery.of(context).size.height / 3,
               widget.movie.imageThumbnailPath.toString(),
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  SvgPicture.asset(imageRequire),
             ),
           ),
           Positioned(

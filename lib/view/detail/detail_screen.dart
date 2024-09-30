@@ -1,9 +1,14 @@
+import 'package:bloc_tutorial/bloc/favourite/favourite_bloc.dart';
+import 'package:bloc_tutorial/bloc/favourite/favourite_event.dart';
+import 'package:bloc_tutorial/bloc/favourite/favourite_state.dart';
 import 'package:bloc_tutorial/bloc/movie_detail/movie_detail_bloc.dart';
 import 'package:bloc_tutorial/bloc/movie_detail/movie_detail_event.dart';
 import 'package:bloc_tutorial/bloc/movie_detail/movie_detail_state.dart';
+import 'package:bloc_tutorial/model/movie_list_response.dart';
 import 'package:bloc_tutorial/repository/movie_repository.dart';
 import 'package:bloc_tutorial/util/enums.dart';
 import 'package:bloc_tutorial/view/detail/widgets/text_card.dart';
+import 'package:bloc_tutorial/view/favourite/favorite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -99,17 +104,49 @@ class _DetailScreenState extends State<DetailScreen> {
                                           )
                                         ],
                                       ),
-                                      const Row(
+                                      Row(
                                         children: [
-                                          Icon(
-                                            Icons.favorite,
-                                            size: 24,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(
+                                          BlocBuilder<FavouriteBloc,
+                                                  FavouriteState>(
+                                              builder: ((favContext, state) {
+                                            return IconButton(
+                                                onPressed: () {
+                                                  final movie = TvShows(
+                                                      id: data.id,
+                                                      name: data.name,
+                                                      permalink: data.permalink,
+                                                      startDate: data.startDate,
+                                                      endDate: data.endDate,
+                                                      country: data.country,
+                                                      network: data.network,
+                                                      status: data.status,
+                                                      imageThumbnailPath: data
+                                                          .imageThumbnailPath);
+
+                                                  favContext
+                                                      .read<FavouriteBloc>()
+                                                      .add(AddFavouriteEvent(
+                                                          movie: movie));
+                                                },
+                                                icon: Icon(
+                                                  Icons.favorite,
+                                                  size: 24,
+                                                  color: state.favouriteList
+                                                              .where(
+                                                                  (element) =>
+                                                                      element
+                                                                          .id ==
+                                                                      data.id)
+                                                              .firstOrNull !=
+                                                          null
+                                                      ? Colors.red
+                                                      : Colors.white,
+                                                ));
+                                          })),
+                                          const SizedBox(
                                             width: 15,
                                           ),
-                                          Icon(
+                                          const Icon(
                                             Icons.share,
                                             size: 24,
                                             color: Colors.white,
